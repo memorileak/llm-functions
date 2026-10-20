@@ -25,10 +25,17 @@ main() {
         echo "Not found file: $argc_path"
         exit 1
     fi
-    new_contents="$(awk -f "$ROOT_DIR/utils/patch.awk" "$argc_path" <(printf "%s" "$argc_contents"))"
-    printf "%s" "$new_contents" | git diff --no-index "$argc_path" - || true
+    tmp="$(mktemp)"
+    trap 'rm -f "$tmp" "$tmp.2"' EXIT
+    awk -f "$ROOT_DIR/utils/patch.awk" "$argc_path" <(printf "%s\n" "$argc_contents") > "$tmp"
+    if [ -s "$argc_path" ] && [ -n "$(tail -c1 "$argc_path")" ]; then
+        # original had no trailing newline: preserve that
+        printf "%s" "$(cat "$tmp")" > "$tmp.2"
+        mv "$tmp.2" "$tmp"
+    fi
+    git diff --no-index "$argc_path" "$tmp" || true
     "$ROOT_DIR/utils/guard_operation.sh" "Apply changes?"
-    printf "%s" "$new_contents" > "$argc_path"
+    cat "$tmp" > "$argc_path"
 
     echo "The patch applied to: $argc_path" >> "$LLM_OUTPUT"
 }
