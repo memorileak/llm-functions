@@ -10,10 +10,12 @@ set -e
 ROOT_DIR="${LLM_ROOT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 
 main() {
-  # Preview the script for the user, with real newlines and line numbers
+  # Preview the script for the user with JavaScript syntax highlighting
   {
     echo "============ Script to execute ============"
-    printf '%s\n' "$argc_script" | cat -n
+  } >&2
+  printf '%s\n' "$argc_script" | "$ROOT_DIR/utils/preview_code.sh" javascript
+  {
     echo "==========================================="
   } >&2
 

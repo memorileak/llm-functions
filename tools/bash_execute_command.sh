@@ -10,10 +10,12 @@ set -e
 ROOT_DIR="${LLM_ROOT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 
 main() {
-  # Preview the command for the user (stderr, so it is not part of the tool result)
+  # Preview the command for the user with shell syntax highlighting (stderr, not tool output)
   {
     echo "============ Command to execute ============"
-    printf '$ %s\n' "$argc_command"
+  } >&2
+  printf '$ %s\n' "$argc_command" | "$ROOT_DIR/utils/preview_code.sh" bash
+  {
     echo "============================================"
   } >&2
 
