@@ -8,11 +8,18 @@
 # - Hunks may appear in any order, but must not overlap.
 # - A hunk with no original lines (pure addition) is appended to the end of the file.
 
+BEGIN {
+    # Remember the first input file so the target can be read even when it is empty.
+    targetFile = ARGV[1]
+}
+
+# Remove trailing spaces, tabs, and CR only for the fallback comparison.
 function norm(s) {
     sub(/[ \t\r]+$/, "", s)
     return s
 }
 
+# Return whether hunk h's original lines match at file position pos.
 function matchAt(h, pos, loose,    i, a, b) {
     for (i = 1; i <= origCount[h]; i++) {
         a = lines[pos + i - 1]
@@ -29,13 +36,19 @@ function fail(msg) {
     exit 1
 }
 
-FNR == NR {
+# AWK reads the target first and the patch second. Keep the target unchanged
+# in memory; all matching and output below are based on this original content.
+FILENAME == targetFile {
     lines[FNR] = $0
     totalLines = FNR
     next
 }
 
+# Parse unified-diff hunk lines into parallel original/new line arrays.
+# Context and removed lines form the text that must match; context and added
+# lines form the replacement. Hunk header line numbers are deliberately ignored.
 {
+    sub(/\r$/, "", $0)
     if (!inHunk) {
         if ($0 ~ /^@@/) { inHunk = 1; hunks++ }
         next
@@ -61,7 +74,12 @@ END {
     if (failed) exit 1
     if (hunks == 0) fail("no patch (no @@ hunk found)")
 
+    # Locate every hunk against the original file. Try exact bytes first, then
+    # permit trailing whitespace/CR differences. Reject ambiguous matches rather
+    # than risk applying a patch at the wrong occurrence.
     for (h = 1; h <= hunks; h++) {
+        # A hunk containing only additions has no text to search for, so it is
+        # assigned the position just after the original file.
         if (origCount[h] == 0) {
             start[h] = totalLines + 1
             len[h] = 0
@@ -83,7 +101,8 @@ END {
         len[h] = origCount[h]
     }
 
-    # stable insertion sort of hunk order by start position
+    # Patches need not list hunks in file order. Sort their located positions so
+    # the output pass can copy and replace the file from top to bottom.
     for (h = 1; h <= hunks; h++) order[h] = h
     for (i = 2; i <= hunks; i++) {
         v = order[i]
@@ -91,11 +110,15 @@ END {
         while (j >= 1 && start[order[j]] > start[v]) { order[j + 1] = order[j]; j-- }
         order[j + 1] = v
     }
+    # Two hunks cannot safely replace any of the same original lines.
     for (i = 2; i <= hunks; i++) {
         if (start[order[i]] < start[order[i - 1]] + len[order[i - 1]])
             fail("hunks " order[i - 1] " and " order[i] " overlap")
     }
 
+    # Rebuild the file in original-line order. At a hunk's start, emit its
+    # replacement; skip the original lines consumed by that hunk. Lines outside
+    # hunks pass through unchanged. The extra iteration permits additions at EOF.
     k = 1
     for (ln = 1; ln <= totalLines + 1; ln++) {
         while (k <= hunks && start[order[k]] == ln) {
