@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-# @describe Execute a complete Node.js script using the node command. Use this for complex JavaScript automation that needs multiple steps, such as reading or writing many files, processing data, calling APIs, or chaining several operations. Pass the entire script content (multi-line is fine). The script runs in a new node process, inherits all environment variables, and its stdout and stderr are returned together with its exit code. The user is shown the script and must confirm before it runs.
+# @describe Execute a complete Node.js script using the node command. Use this for complex JavaScript automation that needs multiple steps, such as reading or writing many files, processing data, calling APIs, or chaining several operations. Pass the entire script content (multi-line is fine). The script MUST be written as CommonJS: use require() and module.exports, and do NOT use ES module syntax (import/export, import.meta) or top-level await; wrap async code in an async function, e.g. (async () => { ... })(). Modules are resolved from the node_modules directory of the current working directory, then from globally available modules; Node.js built-ins (fs, path, child_process, etc.) are always available. The script runs in a new node process, inherits all environment variables, and its stdout and stderr are returned together with its exit code. The user is shown the script and must confirm before it runs.
 
 # @option --script! The full Node.js script to execute
 
@@ -24,20 +24,23 @@ main() {
     return 1
   fi
 
-  # Write the script to a temporary .js file so node reports accurate line numbers.
-  # Resolve the temp directory to an absolute path so any reported path is absolute.
-  local tmp_dir script_file
+  # Write the script to a private temp dir as script.js (CommonJS) so node reports accurate
+  # line numbers. A directory is used because mktemp templates with a suffix are not portable.
+  # The path is made absolute so any reported path is absolute.
+  local tmp_dir script_dir script_file
   tmp_dir="$(cd "${TMPDIR:-/tmp}" && pwd)"
-  script_file="$(mktemp "$tmp_dir/bash_execute_nodejs.XXXXXX.js")"
+  script_dir="$(mktemp -d "$tmp_dir/bash_execute_nodejs.XXXXXX")"
+  script_file="$script_dir/script.js"
   printf '%s\n' "$argc_script" >"$script_file"
 
-  # Run in a child node process: it inherits all exported environment variables
+  # Run in a child node process: it inherits all exported environment variables.
+  # The script lives in the temp dir, so point module resolution at the cwd's node_modules.
   local status=0
-  node "$script_file" >>"$LLM_OUTPUT" 2>&1 || status=$?
+  NODE_PATH="$PWD/node_modules${NODE_PATH:+:$NODE_PATH}" node "$script_file" >>"$LLM_OUTPUT" 2>&1 || status=$?
 
   if [[ $status -eq 0 ]]; then
     # Success: remove the temporary script
-    rm -f "$script_file"
+    rm -rf "$script_dir"
     return 0
   fi
 
