@@ -4,6 +4,4 @@ bash_execute_nodejs.sh
 fetch_url_via_curl.sh
 fs_cat.sh
 fs_ls.sh
-fs_mkdir.sh
-fs_write.sh
 codegraph_explore.sh
