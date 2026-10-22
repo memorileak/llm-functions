@@ -1,6 +1,8 @@
 bash_execute_command.sh
 bash_execute_nodejs.sh
 bash_execute_script.sh
+cerp_find.sh
+cerp_get.sh
 codegraph_explore.sh
 fetch_url_via_curl.sh
 fs_cat.sh
@@ -9,5 +11,4 @@ fs_mkdir.sh
 fs_patch.sh
 fs_rm.sh
 fs_write.sh
-fs_get_latest_ce_report.sh
 get_current_time.sh

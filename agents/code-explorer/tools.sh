@@ -3,20 +3,33 @@ set -e
 
 # @env LLM_OUTPUT=/dev/stdout The output path
 
-# @cmd Save a markdown report. The file name is auto-computed as <task-slug>.<yymmdd-HHMMSS>.md
+reports_dir="$HOME/.local/share/llm-functions/agents/code-explorer/reports"
+
+# Keep only letters, digits, '.', '-', '_'; trim leading/trailing '-' and '.'
+slugify() {
+    printf "%s" "$1" | tr -c 'A-Za-z0-9._-' '-' | sed -e 's/^[-.]*//' -e 's/-*$//'
+}
+
+# @cmd Save a markdown report. The file is saved as <project>/<task-slug>.<yymmdd-HHMMSS>.md
+# @option --project! Project name in slug format (letters, digits, '-', '_')
 # @option --task-slug! Short slug of the task (letters, digits, '-', '_')
 # @option --contents! The markdown contents of the report
-fs_write_report() {
-    local slug reports_dir ts file
-    slug="$(printf "%s" "$argc_task_slug" | tr -c 'A-Za-z0-9._-' '-' | sed -e 's/^[-.]*//' -e 's/-*$//')"
+cerp_write() {
+    local project slug dir ts file
+    project="$(slugify "$argc_project")"
+    if [[ -z "$project" ]]; then
+        echo "Error: invalid project" >&2
+        exit 1
+    fi
+    slug="$(slugify "$argc_task_slug")"
     if [[ -z "$slug" ]]; then
         echo "Error: invalid task-slug" >&2
         exit 1
     fi
-    reports_dir="$HOME/.local/share/llm-functions/agents/code-explorer/reports"
-    mkdir -p "$reports_dir"
+    dir="$reports_dir/$project"
+    mkdir -p "$dir"
     ts="$(date +%y%m%d-%H%M%S)"
-    file="$reports_dir/$slug.$ts.md"
+    file="$dir/$slug.$ts.md"
     if [[ -e "$file" ]]; then
         echo "Error: file already exists: $file" >&2
         exit 1
