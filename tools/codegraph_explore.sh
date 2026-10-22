@@ -38,30 +38,28 @@ main() {
     local cmd="$argc_command"
 
     case "$cmd" in
-        status|files)
-            ;;
-        query|explore|context|callers|callees|impact)
-            if [[ ${#args[@]} -eq 0 ]]; then
-                echo "error: '$cmd' requires at least one argument" >&2
-                exit 1
-            fi
-            ;;
-        node|affected)
-            ;;
-        *)
-            echo "error: unsupported command '$cmd'" >&2
+    status | files) ;;
+    query | explore | context | callers | callees | impact)
+        if [[ ${#args[@]} -eq 0 ]]; then
+            echo "error: '$cmd' requires at least one argument" >&2
             exit 1
-            ;;
+        fi
+        ;;
+    node | affected) ;;
+    *)
+        echo "error: unsupported command '$cmd'" >&2
+        exit 1
+        ;;
     esac
 
     cd "$argc_path"
     # Disable colors so output is clean for the LLM. For `status`, path is positional.
     if [[ "$cmd" == "status" ]]; then
-        codegraph --no-color status >> "$LLM_OUTPUT"
+        codegraph --no-color status >>"$LLM_OUTPUT"
     elif [[ "$cmd" == "files" ]]; then
-        codegraph --no-color files "${args[@]}" >> "$LLM_OUTPUT"
+        codegraph --no-color files "${args[@]}" >>"$LLM_OUTPUT"
     else
-        codegraph --no-color "$cmd" "${args[@]}" >> "$LLM_OUTPUT"
+        codegraph --no-color "$cmd" "${args[@]}" >>"$LLM_OUTPUT"
     fi
 }
 

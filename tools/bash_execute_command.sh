@@ -10,25 +10,25 @@ set -e
 ROOT_DIR="${LLM_ROOT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 
 main() {
-  # Preview the command for the user with shell syntax highlighting (stderr, not tool output)
-  {
-    echo "============ Command to execute ============"
-  } >&2
-  printf '$ %s\n' "$argc_command" | "$ROOT_DIR/utils/preview_code.sh" bash
-  {
-    echo "============================================"
-  } >&2
+    # Preview the command for the user with shell syntax highlighting (stderr, not tool output)
+    {
+        echo "============ Command to execute ============"
+    } >&2
+    printf '$ %s\n' "$argc_command" | "$ROOT_DIR/utils/preview_code.sh" bash
+    {
+        echo "============================================"
+    } >&2
 
-  "$ROOT_DIR/utils/guard_operation.sh" "Execute this command?"
+    "$ROOT_DIR/utils/guard_operation.sh" "Execute this command?"
 
-  # Run in a child bash: it inherits all exported environment variables
-  local status=0
-  bash -c "$argc_command" >>"$LLM_OUTPUT" 2>&1 || status=$?
+    # Run in a child bash: it inherits all exported environment variables
+    local status=0
+    bash -c "$argc_command" >>"$LLM_OUTPUT" 2>&1 || status=$?
 
-  if [[ $status -ne 0 ]]; then
-    echo "Command exited with non-zero status: $status" >>"$LLM_OUTPUT"
-    return 0
-  fi
+    if [[ $status -ne 0 ]]; then
+        echo "Command exited with non-zero status: $status" >>"$LLM_OUTPUT"
+        return 0
+    fi
 }
 
 eval "$(argc --argc-eval "$0" "$@")"

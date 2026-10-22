@@ -42,7 +42,7 @@ main() {
         echo "Report file: $latest"
         echo
         cat "$latest"
-    } >> "$LLM_OUTPUT"
+    } >>"$LLM_OUTPUT"
 }
 
 eval "$(argc --argc-eval "$0" "$@")"

@@ -34,8 +34,8 @@ cerp_write() {
         echo "Error: file already exists: $file" >&2
         exit 1
     fi
-    printf "%s" "$argc_contents" > "$file"
-    echo "Report saved: $file" >> "$LLM_OUTPUT"
+    printf "%s" "$argc_contents" >"$file"
+    echo "Report saved: $file" >>"$LLM_OUTPUT"
 }
 
 # See more details at https://github.com/sigoden/argc
