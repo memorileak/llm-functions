@@ -43,7 +43,7 @@ main() {
     echo "The temporary script was kept at: $script_file"
     echo "Please take a look at this file to find the cause of the failure."
   } >>"$LLM_OUTPUT"
-  return $status
+  return 0
 }
 
 eval "$(argc --argc-eval "$0" "$@")"

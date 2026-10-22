@@ -23,7 +23,7 @@ main() {
 
   if ! command -v node >/dev/null 2>&1; then
     echo "node is not installed or not found in PATH" >>"$LLM_OUTPUT"
-    return 1
+    return 0
   fi
 
   # Write the script to a private temp dir as script.js (CommonJS) so node reports accurate
@@ -52,7 +52,7 @@ main() {
     echo "The temporary script was kept at: $script_file"
     echo "Please take a look at this file to find the cause of the failure."
   } >>"$LLM_OUTPUT"
-  return $status
+  return 0
 }
 
 eval "$(argc --argc-eval "$0" "$@")"

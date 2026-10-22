@@ -27,7 +27,7 @@ main() {
 
   if [[ $status -ne 0 ]]; then
     echo "Command exited with non-zero status: $status" >>"$LLM_OUTPUT"
-    return $status
+    return 0
   fi
 }
 
