@@ -27,7 +27,10 @@ main() {
     fi
     tmp="$(mktemp)"
     trap 'rm -f "$tmp" "$tmp.2"' EXIT
-    awk -f "$ROOT_DIR/utils/patch.awk" "$argc_path" <(printf "%s\n" "$argc_contents") > "$tmp"
+    # The patch may already end with a newline. A second one would be parsed by
+    # patch.awk as a blank context line and make the last hunk fail to match
+    # ("hunk N not found"). So drop one trailing newline, then add exactly one.
+    awk -f "$ROOT_DIR/utils/patch.awk" "$argc_path" <(printf "%s\n" "${argc_contents%$'\n'}") > "$tmp"
     if [ -s "$argc_path" ] && [ -n "$(tail -c1 "$argc_path")" ]; then
         # original had no trailing newline: preserve that
         printf "%s" "$(cat "$tmp")" > "$tmp.2"
