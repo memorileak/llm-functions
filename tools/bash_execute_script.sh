@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-# @describe Execute a complete bash script. Use this for complex automation that needs multiple steps, such as creating or editing many files, running conditional checks, for/while loops, pipelines, or chaining several commands together. Pass the entire script content (multi-line is fine, a shebang is optional). The script runs in a new bash process, inherits all environment variables, and its stdout and stderr are returned together with its exit code. By default the script keeps going after a failing command and its exit code is that of the last command; to make it stop at the first failure, start it with `set -euo pipefail` and guard commands that are expected to fail (e.g. grep with no match) using `|| true` or an `if` condition. If the script exits with a non-zero status, it is kept in a temporary file whose path is reported in the output. The user is shown the script and must confirm before it runs.
+# @describe Execute a complete bash script (shebang optional) for multi-step automation: file edits, conditionals, loops, pipelines. **ALWAYS** include comments explaining the overall logic and the intention of each statement or command. Runs in a new bash process, inherits all environment variables, and returns stdout, stderr and exit code. By default it continues after a failing command and exits with the last command's code; to stop at the first failure, start with `set -euo pipefail` and guard expected failures with `|| true` or `if`. A failed script is kept in a temp file whose path is reported. The user must confirm before it runs.
 
 # @option --script! The full bash script to execute
 

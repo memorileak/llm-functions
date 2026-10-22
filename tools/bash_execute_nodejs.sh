@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-# @describe Execute a complete Node.js script using the node command. Use this for complex JavaScript automation that needs multiple steps, such as reading or writing many files, processing data, calling APIs, or chaining several operations. Pass the entire script content (multi-line is fine). The script MUST be written as CommonJS: use require() and module.exports, and do NOT use ES module syntax (import/export, import.meta) or top-level await; wrap async code in an async function, e.g. (async () => { ... })(). Modules are resolved from the node_modules directory of the current working directory, then from globally available modules; Node.js built-ins (fs, path, child_process, etc.) are always available. The script runs in a new node process, inherits all environment variables, and its stdout and stderr are returned together with its exit code. The user is shown the script and must confirm before it runs.
+# @describe Execute a complete Node.js script for complex JavaScript automation: many files, data processing, API calls, chained operations. **ALWAYS** include comments explaining the overall logic and the intention of each statement. Must be CommonJS (`require`, `module.exports`); no `import`/`export`, `import.meta` or top-level await; wrap async code in `(async () => { ... })()`. Modules resolve from the cwd's `node_modules`, then globals; Node.js built-ins are available. Runs in a new node process, inherits all environment variables, and returns stdout, stderr and exit code. A failed script is kept in a temp file whose path is reported. The user must confirm before it runs.
 
 # @option --script! The full Node.js script to execute
 

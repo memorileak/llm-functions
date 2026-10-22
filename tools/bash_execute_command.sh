@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-# @describe Execute a short, simple, single-line bash command, such as `ls -la`, `git status`, `grep -rn foo src/` or `mkdir -p build`. Use it for quick one-off commands. For multi-line logic, loops, conditionals or editing many files, use bash_execute_script instead. The command inherits all environment variables, and its stdout and stderr are returned. The user is shown the command and must confirm before it runs.
+# @describe Execute a short single-line bash command (e.g. `ls -la`, `git status`, `grep -rn foo src/`) for quick one-off tasks; for multi-line logic, loops or many edits use bash_execute_script. **ALWAYS** append a trailing `# comment` explaining the intention of the command. Inherits all environment variables and returns stdout and stderr. The user must confirm before it runs.
 
 # @option --command! The single-line bash command to execute
 
