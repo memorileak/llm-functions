@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
-set -e
+
+set -euo pipefail
 
 # @env LLM_OUTPUT=/dev/stdout The output path
 
 reports_dir="$HOME/.local/share/llm-functions/agents/code-explorer/reports"
+
+die() {
+    echo "$1" >>"$LLM_OUTPUT"
+    exit 0
+}
 
 # Keep only letters, digits, '.', '-', '_'; trim leading/trailing '-' and '.'
 slugify() {
@@ -16,25 +22,27 @@ slugify() {
 # @option --contents! The markdown contents of the report
 cerp_write() {
     local project slug dir ts file
-    project="$(slugify "$argc_project")"
+
+    project="$(slugify "$argc_project" || true)"
     if [[ -z "$project" ]]; then
-        echo "Error: invalid project" >&2
-        exit 1
+        die "Error: invalid project"
     fi
-    slug="$(slugify "$argc_task_slug")"
+
+    slug="$(slugify "$argc_task_slug" || true)"
     if [[ -z "$slug" ]]; then
-        echo "Error: invalid task-slug" >&2
-        exit 1
+        die "Error: invalid task-slug"
     fi
+
     dir="$reports_dir/$project"
-    mkdir -p "$dir"
+    mkdir -p "$dir" || die "Error: failed to create directory '$dir'"
+
     ts="$(date +%y%m%d-%H%M%S)"
     file="$dir/$slug.$ts.md"
     if [[ -e "$file" ]]; then
-        echo "Error: file already exists: $file" >&2
-        exit 1
+        die "Error: file already exists: $file"
     fi
-    printf "%s" "$argc_contents" >"$file"
+
+    printf "%s" "$argc_contents" >"$file" || die "Error: failed to write report to '$file'"
     echo "Report saved: $file" >>"$LLM_OUTPUT"
 }
 
