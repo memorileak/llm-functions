@@ -3,6 +3,8 @@ bash_execute_nodejs.sh
 bash_execute_script.sh
 cerp_find.sh
 cerp_get.sh
+cmd_jq.sh
+cmd_tree.sh
 codegraph_explore.sh
 fetch_url_via_curl.sh
 fs_cat.sh
@@ -12,3 +14,4 @@ fs_patch.sh
 fs_rm.sh
 fs_write.sh
 get_current_time.sh
+json_schema.js
