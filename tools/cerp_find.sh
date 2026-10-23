@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-set -e
+
+set -euo pipefail
 
 # @describe Find code-explorer reports by keyword. Matches the project name or the task slug and returns unique "<project><TAB><task-slug>" lines.
 # Reports are stored as <project>/<task-slug>.<yymmdd-HHMMSS>.md under $HOME/.local/share/llm-functions/agents/code-explorer/reports/
@@ -21,14 +22,17 @@ list_reports() {
     fi
 }
 
+die() {
+    echo "$1" >>"$LLM_OUTPUT"
+    exit 0
+}
+
 main() {
     if [[ -z "$argc_keyword" ]]; then
-        echo "Error: keyword must not be empty" >&2
-        exit 1
+        die "Error: keyword must not be empty"
     fi
     if [[ ! -d "$reports_dir" ]]; then
-        echo "Error: reports directory not found: $reports_dir" >&2
-        exit 1
+        die "Error: reports directory not found: $reports_dir"
     fi
     # 1. list report paths
     # 2. keep only <project>/<task-slug>.<timestamp>.md paths and turn them into <project>\t<task-slug>
@@ -37,7 +41,7 @@ main() {
     list_reports |
         sed -n 's|^\([^/]*\)/\(.*\)\.[0-9]\{6\}-[0-9]\{6\}\.md$|\1\t\2|p' |
         { grep -iF -- "$argc_keyword" || true; } |
-        sort -u >>"$LLM_OUTPUT"
+        sort -u >>"$LLM_OUTPUT" 2>&1 || die "Error: failed to search reports for keyword '$argc_keyword'"
 }
 
 eval "$(argc --argc-eval "$0" "$@")"

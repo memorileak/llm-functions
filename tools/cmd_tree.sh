@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-set -e
+
+set -euo pipefail
 
 # @describe List directory contents as a tree. Pass all tree arguments via --args as a string, e.g. a directory path, -L <depth>, -I <pattern>, -a, -d.
 # @option --args A string contains arguments passed to tree as-is (directory paths and flags).

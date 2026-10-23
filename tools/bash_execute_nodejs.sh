@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-set -e
+
+set -euo pipefail
 
 # @describe Execute a complete Node.js script for complex JavaScript automation: many files, data processing, API calls, chained operations. **ALWAYS** include comments explaining the overall logic and the intention of each statement. Must be CommonJS (`require`, `module.exports`); no `import`/`export`, `import.meta` or top-level await; wrap async code in `(async () => { ... })()`. Modules resolve from the cwd's `node_modules`, then globals; Node.js built-ins are available. Runs in a new node process, inherits all environment variables, and returns stdout, stderr and exit code. A failed script is kept in a temp file whose path is reported. The user must confirm before it runs.
 
@@ -8,6 +9,11 @@ set -e
 # @env LLM_OUTPUT=/dev/stdout The output path
 
 ROOT_DIR="${LLM_ROOT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
+
+die() {
+    echo "$1" >>"$LLM_OUTPUT"
+    exit 0
+}
 
 main() {
     # Preview the script for the user with JavaScript syntax highlighting
@@ -22,8 +28,7 @@ main() {
     "$ROOT_DIR/utils/guard_operation.sh" "Execute this script?"
 
     if ! command -v node >/dev/null 2>&1; then
-        echo "node is not installed or not found in PATH" >>"$LLM_OUTPUT"
-        return 0
+        die "node is not installed or not found in PATH"
     fi
 
     # Write the script to a private temp dir as script.js (CommonJS) so node reports accurate
@@ -43,7 +48,7 @@ main() {
     if [[ $status -eq 0 ]]; then
         # Success: remove the temporary script
         rm -rf "$script_dir"
-        return 0
+        exit 0
     fi
 
     # Failure: keep the temporary script and tell the user where it is
@@ -52,7 +57,7 @@ main() {
         echo "The temporary script was kept at: $script_file"
         echo "Please take a look at this file to find the cause of the failure."
     } >>"$LLM_OUTPUT"
-    return 0
+    exit 0
 }
 
 eval "$(argc --argc-eval "$0" "$@")"

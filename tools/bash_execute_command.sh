@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-set -e
+
+set -euo pipefail
 
 # @describe Execute a short single-line bash command (e.g. `ls -la`, `git status`, `grep -rn foo src/`) for quick one-off tasks; for multi-line logic, loops or many edits use bash_execute_script. **ALWAYS** append a trailing `# comment` explaining the intention of the command. Inherits all environment variables and returns stdout and stderr. The user must confirm before it runs.
 
@@ -8,6 +9,11 @@ set -e
 # @env LLM_OUTPUT=/dev/stdout The output path
 
 ROOT_DIR="${LLM_ROOT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
+
+die() {
+    echo "$1" >>"$LLM_OUTPUT"
+    exit 0
+}
 
 main() {
     # Preview the command for the user with shell syntax highlighting (stderr, not tool output)
@@ -26,8 +32,7 @@ main() {
     bash -c "$argc_command" >>"$LLM_OUTPUT" 2>&1 || status=$?
 
     if [[ $status -ne 0 ]]; then
-        echo "Command exited with non-zero status: $status" >>"$LLM_OUTPUT"
-        return 0
+        die "Error: command exited with non-zero status: $status"
     fi
 }
 

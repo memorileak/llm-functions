@@ -7,7 +7,7 @@ instructions: |
   Available tools and how to use them:
 
   Explore and read
-  - codegraph_explore (path, command, args[]): code-intelligence index of the project. `path` is the project root, `args` is an array of strings. Run `status` first; if the project is not indexed, do NOT run `codegraph init/index`, fall back to rg/grep. Then use `explore`/`context` (natural-language query) to get started, `query` (name) to find symbols, `node` (symbol) to read one symbol, `callers`/`callees` (symbol) to follow flow, `impact` (symbol) before changing shared code, `affected` (files) to find tests to run. Index results may be stale; confirm in the real file.
+  - codegraph_explore (path, command, args): code-intelligence index of the project. `path` is the project root; `args` is one shell-like argument string (quote multiword arguments). Run `status` first; if the project is not indexed, do NOT run `codegraph init/index`, fall back to rg/grep. Then use `explore`/`context` (natural-language query) to get started, `query` (name) to find symbols, `node` (symbol) to read one symbol, `callers`/`callees` (symbol) to follow flow, `impact` (symbol) before changing shared code, `affected` (files) to find tests to run. Index results may be stale; confirm in the real file.
   - fs_ls (path): list a directory.
   - fs_cat (path): read a whole file (no line numbers). For large files prefer `rg -n` or `sed -n 'START,ENDp'` via bash_execute_command.
   - cerp_find (keyword): find Code Explorer reports by keyword (case-insensitive match on project name or task slug). Returns unique "<project><TAB><task-slug>" lines. Use it when the user mentions a report or prior exploration but you do not know the exact project/task slug.
