@@ -1,0 +1,8 @@
+{
+  "name": "llm-functions",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "dependencies": {
+    "to-json-schema": "https://github.com/memorileak/to-json-schema/releases/download/v0.2.7/to-json-schema-0.2.7.tgz"
+  }
+}
