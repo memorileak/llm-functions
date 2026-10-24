@@ -2,8 +2,7 @@
 
 set -euo pipefail
 
-# @describe Explore a codebase using a pre-built `codegraph` index (code intelligence / knowledge graph). Pass sub-command arguments as a shell-like string via --args; quote multiword arguments.
-# The project directory MUST already be indexed with `codegraph init`/`codegraph index`.
+# @describe Explore a codebase using a pre-built `codegraph` index (code intelligence / knowledge graph). Available sub-commands: status, query, explore, context, node, files, callers, callees, impact, affected. Pass sub-command arguments as a shell-like string via --args; quote multiword arguments. The project directory MUST already be indexed with `codegraph init`/`codegraph index`.
 #
 # Commands (pass one as --command, with its arguments as a shell-like string in --args):
 #   status    Show index status and statistics (files, symbols, languages). Use first to check the index is ready. No args.

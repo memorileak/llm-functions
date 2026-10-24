@@ -2,8 +2,7 @@
 
 set -euo pipefail
 
-# @describe Run `jq`, a command-line JSON processor. Pass all jq arguments as a string via --args, e.g. a filter followed by input file path(s), or flags like -r, -c, -e.
-# Input is read from files only; stdin is not available to this tool.
+# @describe Run `jq`, a command-line JSON processor. Pass all jq arguments as a string via --args, e.g. a filter followed by input file path(s), or flags like -r, -c, -e. Input is read from files only; stdin is not available to this tool.
 # @option --args A string contains arguments passed to jq as-is (filter, flags and input file paths)
 
 # @env LLM_OUTPUT=/dev/stdout The output path
