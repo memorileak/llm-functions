@@ -85,9 +85,11 @@ cerp_write() {
     if [[ -n "$latest" ]]; then
         against="$latest"
     fi
+
     git diff --no-index "$against" "$tmp" || true
 
-    "$ROOT_DIR/utils/guard_operation.sh" "Save report '$file'?"
+    "$ROOT_DIR/utils/guard_operation.sh" "Save report '$file'?" ||
+        die "User cancelled saving report '$file'"
 
     # The sentinel keeps trailing newlines, which $(...) would otherwise strip.
     contents="$(
@@ -137,7 +139,8 @@ cerp_patch() {
 
     git diff --no-index "$latest" "$tmp" || true
 
-    "$ROOT_DIR/utils/guard_operation.sh" "Apply changes?"
+    "$ROOT_DIR/utils/guard_operation.sh" "Apply changes?" ||
+        die "User cancelled applying patch to '$latest'"
 
     # The sentinel keeps trailing newlines, which $(...) would otherwise strip.
     patched="$(

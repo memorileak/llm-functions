@@ -25,7 +25,8 @@ main() {
         echo "==========================================="
     } >&2
 
-    "$ROOT_DIR/utils/guard_operation.sh" "Execute this script?"
+    "$ROOT_DIR/utils/guard_operation.sh" "Execute this script?" ||
+        die "User cancelled script execution"
 
     if ! command -v node >/dev/null 2>&1; then
         die "node is not installed or not found in PATH"

@@ -50,7 +50,8 @@ main() {
 
     git diff --no-index "$argc_path" "$tmp" || true
 
-    "$ROOT_DIR/utils/guard_operation.sh" "Apply changes?"
+    "$ROOT_DIR/utils/guard_operation.sh" "Apply changes?" ||
+        die "User cancelled applying patch to '$argc_path'"
 
     cat "$tmp" >"$argc_path" 2>>"$LLM_OUTPUT" || die "Error: failed to write patched file '$argc_path'"
 

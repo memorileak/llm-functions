@@ -25,7 +25,8 @@ main() {
         echo "============================================"
     } >&2
 
-    "$ROOT_DIR/utils/guard_operation.sh" "Execute this command?"
+    "$ROOT_DIR/utils/guard_operation.sh" "Execute this command?" ||
+        die "User cancelled command execution"
 
     # Run in a child bash: it inherits all exported environment variables
     local status=0

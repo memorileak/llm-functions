@@ -17,12 +17,14 @@ die() {
 
 main() {
     if [[ -f "$argc_path" ]]; then
-        "$ROOT_DIR/utils/guard_path.sh" "$argc_path" "Remove file '$argc_path'?"
+        "$ROOT_DIR/utils/guard_path.sh" "$argc_path" "Remove file '$argc_path'?" ||
+            die "User cancelled removing file '$argc_path'"
         rm -f "$argc_path" || die "Error: failed to remove file '$argc_path'"
         echo "File removed: $argc_path" >>"$LLM_OUTPUT"
 
     elif [[ -d "$argc_path" ]]; then
-        "$ROOT_DIR/utils/guard_path.sh" "$argc_path" "Remove directory '$argc_path'?"
+        "$ROOT_DIR/utils/guard_path.sh" "$argc_path" "Remove directory '$argc_path'?" ||
+            die "User cancelled removing directory '$argc_path'"
         rm -rf "$argc_path" || die "Error: failed to remove directory '$argc_path'"
         echo "Directory removed: $argc_path" >>"$LLM_OUTPUT"
 

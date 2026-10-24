@@ -19,13 +19,24 @@ fs_create() {
         die "Error: path '$argc_path' is a directory"
     fi
 
+    local against="/dev/null"
     local action="Create"
-    [[ -f "$argc_path" ]] && action="Overwrite existing file"
-    "$ROOT_DIR/utils/guard_path.sh" "$argc_path" "$action '$argc_path'?"
+    if [[ -f "$argc_path" ]]; then
+        against="$argc_path"
+        action="Overwrite existing file"
+    fi
+
+    printf "%s" "$argc_contents" | git diff --no-index "$against" - || true
+
+    "$ROOT_DIR/utils/guard_path.sh" "$argc_path" "$action '$argc_path'?" ||
+        die "User cancelled writing file '$argc_path'"
 
     mkdir -p "$(dirname "$argc_path")" >>"$LLM_OUTPUT" 2>&1 ||
         die "Error: failed to create directory '$(dirname "$argc_path")'"
-    printf "%s" "$argc_contents" >"$argc_path" || die "Error: failed to write file '$argc_path'"
+
+    printf "%s" "$argc_contents" >"$argc_path" ||
+        die "Error: failed to write file '$argc_path'"
+
     echo "File written ($action): $argc_path" >>"$LLM_OUTPUT"
 }
 

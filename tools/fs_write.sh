@@ -17,15 +17,36 @@ die() {
 }
 
 main() {
-    if [[ -f "$argc_path" ]]; then
-        printf "%s" "$argc_contents" | git diff --no-index "$argc_path" - || true
-        "$ROOT_DIR/utils/guard_operation.sh" "Apply changes?"
-    else
-        "$ROOT_DIR/utils/guard_path.sh" "$argc_path" "Write '$argc_path'?"
-        mkdir -p "$(dirname "$argc_path")" || die "Error: failed to create directory '$(dirname "$argc_path")'"
+    if [[ -d "$argc_path" ]]; then
+        die "Error: path '$argc_path' is a directory"
     fi
-    printf "%s" "$argc_contents" >"$argc_path" 2>>"$LLM_OUTPUT" || die "Error: failed to write to file '$argc_path'"
+
+    local against="/dev/null"
+    local action="Create"
+    if [[ -f "$argc_path" ]]; then
+        against="$argc_path"
+        action="Overwrite existing file"
+    fi
+
+    printf "%s" "$argc_contents" | git diff --no-index "$against" - || true
+
+    "$ROOT_DIR/utils/guard_path.sh" "$argc_path" "$action '$argc_path'?" ||
+        die "User cancelled writing to file '$argc_path'"
+
+    mkdir -p "$(dirname "$argc_path")" >>"$LLM_OUTPUT" 2>&1 ||
+        die "Error: failed to create directory '$(dirname "$argc_path")'"
+
+    printf "%s" "$argc_contents" >"$argc_path" 2>>"$LLM_OUTPUT" ||
+        die "Error: failed to write to file '$argc_path'"
+
     echo "The contents written to: $argc_path" >>"$LLM_OUTPUT"
 }
 
 eval "$(argc --argc-eval "$0" "$@")"
+
+# against="/dev/null"
+# if [[ -n "$latest" ]]; then
+#     against="$latest"
+# fi
+#
+# git diff --no-index "$against" "$tmp" || true

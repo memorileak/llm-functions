@@ -25,7 +25,8 @@ main() {
         echo "==========================================="
     } >&2
 
-    "$ROOT_DIR/utils/guard_operation.sh" "Execute this script?"
+    "$ROOT_DIR/utils/guard_operation.sh" "Execute this script?" ||
+        die "User cancelled script execution"
 
     # Write the script to a private temp dir (absolute path) so it can be kept on failure
     local tmp_dir script_dir script_file
