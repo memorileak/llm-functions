@@ -2,9 +2,9 @@
 
 set -euo pipefail
 
-# @describe Execute a complete Node.js script for complex JavaScript automation: many files, data processing, API calls, chained operations. **ALWAYS** include comments explaining the overall logic and the intention of each statement. Must be CommonJS (`require`, `module.exports`); no `import`/`export`, `import.meta` or top-level await; wrap async code in `(async () => { ... })()`. Modules resolve from the cwd's `node_modules`, then globals; Node.js built-ins are available. Runs in a new node process, inherits all environment variables, and returns stdout, stderr and exit code. A failed script is kept in a temp file whose path is reported. The user must confirm before it runs.
+# @describe Execute a complete Node.js script for complex JavaScript automation: many files, data processing, API calls, chained operations. **ALWAYS COMMENT BEFORE EACH STATEMENT OR LOGICAL BLOCK TO THOROUGHLY EXPLAIN THE INTENTION**. Must be CommonJS (`require`, `module.exports`); no `import`/`export`, `import.meta` or top-level await; wrap async code in `(async () => { ... })()`. Modules resolve from the cwd's `node_modules`, then globals; Node.js built-ins are available. Runs in a new node process, inherits all environment variables, and returns stdout, stderr and exit code. A failed script is kept in a temp file whose path is reported. The user must confirm before it runs.
 
-# @option --script! The full Node.js script to execute
+# @option --script! The full Node.js script to execute, with a '//' comment before every statement or logical block explaining its intention
 
 # @env LLM_OUTPUT=/dev/stdout The output path
 

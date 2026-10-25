@@ -2,18 +2,18 @@
 
 set -euo pipefail
 
-# @describe Execute a complete bash script (shebang optional) for multi-step automation: file edits, conditionals, loops, pipelines. **ALWAYS** include comments explaining the overall logic and the intention of each statement or command. Runs in a new bash process, inherits all environment variables, and returns stdout, stderr and exit code. By default it continues after a failing command and exits with the last command's code; to stop at the first failure, start with `set -euo pipefail` and guard expected failures with `|| true` or `if`. A failed script is kept in a temp file whose path is reported. The user must confirm before it runs.
+# @describe Execute a complete bash script (shebang optional) for multi-step automation: file edits, conditionals, loops, pipelines. **ALWAYS COMMENT BEFORE EACH STATEMENT OR LOGICAL BLOCK TO THOROUGHLY EXPLAIN THE INTENTION**. Runs in a new bash process, inherits all environment variables, and returns stdout, stderr and exit code. By default it continues after a failing command and exits with the last command's code; to stop at the first failure, start with `set -euo pipefail` and guard expected failures with `|| true` or `if`. A failed script is kept in a temp file whose path is reported. The user must confirm before it runs.
 
-# @option --script! The full bash script to execute
+# @option --script! The full bash script to execute, with a '#' comment before every statement or logical block explaining its intention
 
 # @env LLM_OUTPUT=/dev/stdout The output path
 
 ROOT_DIR="${LLM_ROOT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 
-# die() {
-#     echo "$1" >>"$LLM_OUTPUT"
-#     exit 0
-# }
+die() {
+    echo "$1" >>"$LLM_OUTPUT"
+    exit 0
+}
 
 main() {
     # Preview the script for the user with shell syntax highlighting
