@@ -4,17 +4,17 @@ set -euo pipefail
 
 # @describe Explore a codebase using a pre-built `codegraph` index (code intelligence / knowledge graph). Available sub-commands: status, query, explore, context, node, files, callers, callees, impact, affected. Pass sub-command arguments as a shell-like string via --args; quote multiword arguments. The project directory MUST already be indexed with `codegraph init`/`codegraph index`.
 #
-# Commands (pass one as --command, with its arguments as a shell-like string in --args):
-#   status    Show index status and statistics (files, symbols, languages). Use first to check the index is ready. No args.
-#   query     Search symbols (functions, classes, ...) by name. Args: <search>. Returns matching symbols with file locations.
-#   explore   Explore an area in one shot: relevant symbols' source code plus call paths. Args: <query...> (natural-language or keywords). Best starting point for understanding a feature.
-#   context   Build task context: relevant symbols, relationships and code blocks in markdown. Args: <task...> (description of the task).
-#   node      Show one symbol's source with its caller/callee trail. Args: <symbol-name>. Use to read a specific function/class.
-#   files     Show the indexed project file structure as a tree with language/symbol counts. No args.
-#   callers   List all functions/methods that call a symbol. Args: <symbol>.
-#   callees   List all functions/methods called by a symbol. Args: <symbol>.
-#   impact    Analyze what code is affected if a symbol is changed (transitive, depth 2). Args: <symbol>.
-#   affected  Find test files affected by changed source files. Args: <files...> (paths relative to the project).
+# Usage:
+#   --path /project/dir  --command status                        Show index status and statistics
+#   --path /project/dir  --command query     --args <search>     Search for symbols in the codebase
+#   --path /project/dir  --command explore   --args <query...>   Explore an area: relevant symbols' source + call paths in one shot
+#   --path /project/dir  --command context   --args <task...>    Build context for a task: relevant symbols, relationships, and code blocks
+#   --path /project/dir  --command node      --args [name]       One symbol's source + caller/callee trail, or read a file with line numbers + dependents (same output as the codegraph_node MCP tool)
+#   --path /project/dir  --command files                         Show project file structure from the index
+#   --path /project/dir  --command callers   --args <symbol>     Find all functions/methods that call a specific symbol
+#   --path /project/dir  --command callees   --args <symbol>     Find all functions/methods called by a specific symbol
+#   --path /project/dir  --command impact    --args <symbol>     Analyze what code is affected by changing a symbol
+#   --path /project/dir  --command affected  --args [files...]   Find test files affected by changed source files
 #
 # @option --path! The path of the project directory that is already indexed with codegraph
 # @option --command![status|query|explore|context|node|files|callers|callees|impact|affected] The codegraph sub-command to run

@@ -5,7 +5,7 @@ cerp_find.sh
 cerp_get.sh
 cmd_jq.sh
 cmd_tree.sh
-codegraph_explore.sh
+cmd_codegraph.sh
 fetch_url_via_curl.sh
 fs_cat.sh
 fs_ls.sh
