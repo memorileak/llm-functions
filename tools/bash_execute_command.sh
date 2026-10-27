@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-# @describe Execute a short single-line bash command (e.g. `ls -la`, `git status`, `grep -rn foo src/`) for quick one-off tasks; for multi-line logic, loops or many edits use `bash_execute_script`. **ALWAYS COMMENT AFTER THE COMMAND TO THOROUGHLY EXPLAIN THE INTENTION**. Inherits all environment variables and returns stdout and stderr. The user must confirm before it runs.
+# @describe Execute a short single-line bash command (e.g. `ls -la`, `git status`, `grep -rn foo src/`) for quick one-off tasks; for multi-line logic, loops or many edits use `bash_execute_script`. Inherits all environment variables and returns stdout and stderr. The user must confirm before it runs.
 
 # @option --command! The single-line bash command to execute, ending with a trailing '# <intention>' comment
 

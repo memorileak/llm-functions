@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-# @describe Execute a complete bash script (shebang optional) for multi-step automation: file edits, conditionals, loops, pipelines. **ALWAYS COMMENT BEFORE EACH STATEMENT OR LOGICAL BLOCK TO THOROUGHLY EXPLAIN THE INTENTION**. Runs in a new bash process, inherits all environment variables, and returns stdout, stderr and exit code. By default it continues after a failing command and exits with the last command's code; to stop at the first failure, start with `set -euo pipefail` and guard expected failures with `|| true` or `if`. A failed script is kept in a temp file whose path is reported. The user must confirm before it runs.
+# @describe Execute a complete bash script (shebang optional) for multi-step automation: file edits, conditionals, loops, pipelines. Runs in a new bash process, inherits all environment variables, and returns stdout, stderr and exit code. By default it continues after a failing command and exits with the last command's code; to stop at the first failure, start with `set -euo pipefail` and guard expected failures with `|| true` or `if`. A failed script is kept in a temp file whose path is reported. The user must confirm before it runs.
 
 # @option --script! The full bash script to execute, with a '#' comment before every statement or logical block explaining its intention
 
